@@ -1,4 +1,4 @@
-close all; clear all; clc;
+close all; clear all; 
 
 %% LOAD AUDIO 
 
@@ -17,10 +17,12 @@ Te = 1/ Fe;
 fmax = Fe / 2;
 Ni = length(sigI);
 Na = length(sigA);
+Nfft = 1024;
 
 % ANALYSIS
-Nwin = 256;
+Nwin = 512;
 win = hann(Nwin, 'periodic');
+Nover = floor(0.5 *Nwin);
 p = 6; % number of LPC poles 
 
 % interpolation parameters
@@ -32,6 +34,5 @@ Nframes = floor(nInterp / Nwin); % number of frames
 t = [0 : nInterp] * Te;
 f = [-fmax : Fe/nInterp : fmax];
 
-%% === PROGRAM ===
-
-
+% Spectrogram
+[A, E, K, F] = spectroFormant(sigA, p, Fe, win, Nover, Nfft);

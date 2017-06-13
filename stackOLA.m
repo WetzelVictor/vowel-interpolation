@@ -3,7 +3,7 @@
 %
 % x - a single channel signal
 % w - the window function
-%
+% R - (optional) step size (%)
 % X - the overlap-add stack
 %
 function X = stackOLA(x, w, R)
@@ -14,7 +14,7 @@ end
 
 n = length(x);
 nw = length(w);
-step = floor(nw*0.5);
+step = floor(nw*R);
 
 count = floor((n-nw)/step) + 1;
 
