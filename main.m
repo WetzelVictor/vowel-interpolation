@@ -2,7 +2,7 @@ close all; clear all;
 
 %% LOAD AUDIO 
 % random audio signal
-[sig, Fe] = audioread('audio/i.aif');
+[sig, Fe] = audioread('audio/full-sentence.wav');
 sig = 0.9*sig/max(abs(sig)); % normalize
 
 % preemph = [1 0.63];
@@ -15,7 +15,7 @@ fmax = Fe / 2;
 
 % ANALYSIS
 N = length(sig);
-Nwin = 256;
+Nwin = 512;
 win = hamming(Nwin, 'periodic');
 over = 0.5;
 Nover = floor(over *Nwin);

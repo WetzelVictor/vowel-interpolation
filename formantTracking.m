@@ -25,7 +25,7 @@ formants = zeros(size(A));
 % loop through formants
 nn = 1;
 for kk = 1:length(frqs)
-    if (frqs(kk) > 90 && frqs(kk) < 5000 && bw(kk)< 1000)
+    if (frqs(kk) > 90 && frqs(kk) < 5000 && bw(kk)< 1200)
         formants(nn) = frqs(kk);
         nn = nn+1;
     end
