@@ -5,14 +5,18 @@ close all; clear all;
 % vowel 'a'
 [sigA, Fe] = audioread('audio/a.aif');
 sigA = 0.9*sigA/max(abs(sigA)); % normalize
+preemph = [1 0.63];
+sigA = filter(1,preemph,sigA);
 
 % vowel 'i'
 [sigI, ~] = audioread('audio/i.aif');
 sigI = 0.9*sigI/max(abs(sigI)); % normalize
+sigI = filter(1,preemph,sigI);
 
 % random audio signal
 [sig, ~] = audioread('audio/full-sentence.wav');
 sig = 0.9*sig/max(abs(sig)); % normalize
+sig = filter(1,preemph,sig);
 
 %% GLOBAL VARIABLES
 
@@ -24,10 +28,10 @@ Na = length(sigA);
 Nfft = 1024;
 
 % ANALYSIS
-Nwin = 2048;
-win = hann(Nwin, 'periodic');
+Nwin = 256;
+win = hamming(Nwin, 'periodic');
 Nover = floor(0.5 *Nwin);
-p = 6; % number of LPC poles 
+p = 10; % number of LPC poles 
 
 % interpolation parameters
 tInterp = 5; % time of interpolation (s)
