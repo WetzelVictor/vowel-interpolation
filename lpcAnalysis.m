@@ -33,7 +33,8 @@ F = zeros(p, Nframes);
 %% COMPUTING
 for i = 1 : Nframes,
   % Yule-Walker method: computes poles, residual and reflective coefficients
-  [A(:,i), E(:,i)] = lpc(x(:,i), p);
+  % [A(:,i), E(:,i)] = lpc(x(:,i), p);
+  [A(:,i), E(:,i), K(:,i)] = aryule(x(:,i), p);
   if Fe > 0
     F(:,i) = formantTracking(A(2:end, i), Fe);
   end
