@@ -10,6 +10,10 @@ sigA = 0.9*sigA/max(abs(sigA)); % normalize
 [sigI, ~] = audioread('audio/i.aif');
 sigI = 0.9*sigI/max(abs(sigI)); % normalize
 
+% random audio signal
+[sig, ~] = audioread('audio/full-sentence.wav');
+sig = 0.9*sig/max(abs(sig)); % normalize
+
 %% GLOBAL VARIABLES
 
 % Various
@@ -20,7 +24,7 @@ Na = length(sigA);
 Nfft = 1024;
 
 % ANALYSIS
-Nwin = 512;
+Nwin = 2048;
 win = hann(Nwin, 'periodic');
 Nover = floor(0.5 *Nwin);
 p = 6; % number of LPC poles 
@@ -35,4 +39,7 @@ t = [0 : nInterp] * Te;
 f = [-fmax : Fe/nInterp : fmax];
 
 % Spectrogram
-[A, E, K, F] = spectroFormant(sigA, p, Fe, win, Nover, Nfft);
+[a.A, a.E, a.K, a.F] = spectroFormant(sigA, p, Fe, win, Nover, Nfft);
+[i.A, i.E, i.K, i.F] = spectroFormant(sigI, p, Fe, win, Nover, Nfft);
+
+[A, E, K, F] = spectroFormant(sig, p, Fe, win, Nover, Nfft);
