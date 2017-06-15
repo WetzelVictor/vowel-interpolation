@@ -27,8 +27,13 @@ p = 25; % number of LPC poles
 t = [0:Nframes] * Te;
 f = [-fmax : Fe/Nfft : fmax];
 
-% Spectrogram
+%% Spectrogram
 [A, E, K, F] = spectroFormant(sig, p, Fe, win, Nover, Nfft);
 
 figure;
 plot(t, F')
+
+%% Rc to LPC
+% initializing dsp object: reflection coefficient to LPC
+rc2lpc = dsl.RCtoLPC;
+
