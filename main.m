@@ -35,5 +35,9 @@ plot(t, F')
 
 %% Rc to LPC
 % initializing dsp object: reflection coefficient to LPC
-rc2lpc = dsl.RCtoLPC;
+rc2lpc = dsp.RCToLPC;
+
+% convert K to LPC coefficient
+[A1, P] = rc2lpc(K);
+
 
