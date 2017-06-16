@@ -1,10 +1,9 @@
-% interpolatePoles
-% Interpolates LPC data for a given set of LPC data (two vectors in a matrix);
+% interpVectors
 %
-% A: (matrix(p,2)) contains two sets of poles
+% A: (matrix(p,2)) contains two sets of data
 % N: final number of samples
 
-function B = interpolatePoles(A, N)
+function B = interpVectors(A, N)
 
 %% prep
 p = size(A,1); % number of poles
