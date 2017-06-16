@@ -1,4 +1,4 @@
-% [A, E, K, F] = spectroFormant(x, p, Fe, win)
+% [] = spectroFormant(x, p, Fe, win, Nover, Nfft)
 %
 % Output spectrogram with formant detection
 %
@@ -15,7 +15,7 @@
 % K : reflection coefficients
 % F : frequencies of formants
 
-function [A, E, K, F] = spectroFormant(x, p, Fe, win, Nover, Nfft)
+function [] = spectroFormant(x, p, Fe, win, Nover, Nfft)
 
 %% DEFAULT PARAMETER
 if nargin < 5
@@ -45,14 +45,4 @@ xlabel('Temps(s)')
 ylabel('Frequence (Hz)')
 colorbar
 ylim([ -15000 0])
-
-% Instanciation
-A = zeros(p, Nf);
-E = zeros(Nw, Nf);
-K = zeros(p, Nf);
-F = zeros(p, Nf);
-
-% POLE ANALYSIS
-[A, E, K, F] = lpcAnalysis(x, p, win, Fe);
-
 end

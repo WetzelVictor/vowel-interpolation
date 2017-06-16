@@ -6,7 +6,7 @@
 % win : window (default: 128 point Hann window)
 %
 
-function [A, E, K, F] = lpcAnalysis(x, p, win,Fe)
+function [A, E, K, F, Nframes] = lpcAnalysis(x, p, win,Fe)
 
 %% OVERLOADING
 if nargin < 3,
@@ -26,14 +26,14 @@ x = stackOLA(x, win, 0.5);
 
 %% INSTANCIATION
 A = zeros(p+1, Nframes);
-E = zeros(p, Nframes);
+E = zeros(1, Nframes);
 K = zeros(p, Nframes);
 F = zeros(p, Nframes);
 
 %% COMPUTING
 for i = 1 : Nframes,
   % Yule-Walker method: computes poles, residual and reflective coefficients
-  [A(:,i), E(:,i), K(:,i)] = aryule(x(:,i), p);
+  [A(:,i), E(i), K(:,i)] = aryule(x(:,i), p);
   
   % Formant tracking
   if Fe > 0

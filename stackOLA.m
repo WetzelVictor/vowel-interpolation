@@ -8,18 +8,38 @@
 %
 function X = stackOLA(x, w, R)
 
+% Default configuration
 if nargin < 3
   R = 0.5;
 end
 
+%% BASIC NFO
 n = length(x);
 nw = length(w);
 step = floor(nw*R);
+count = ceil((n-nw)/step) + 1;
 
-count = floor((n-nw)/step) + 1;
-
+%% INIT
 X = zeros(nw, count);
+offset = 0;
 
+%% LOOP
 for i = 1:count,
-    X(:, i) = w .* x( (1:nw) + (i-1)*step );
+    % Computes end index ...
+    limit = (i-1)*step + nw; 
+    % ... and check if it tries to access a non-existing data cell
+    if limit > n, 
+      fill = zeros(1.5*nw - n + (i-1)*step - 1, 1);
+      X(:,i) = w.* [ x(nw + offset:end); fill];
+    else % otherwise, computes index. 
+      offset = (i-1)*step;
+      X(:, i) = w .* x( (1:nw) + offset );
+    end
+end
+
+
+
+
+
+
 end

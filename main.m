@@ -5,8 +5,8 @@ close all; clear all;
 [sig, Fe] = audioread('audio/full-sentence.wav');
 sig = 0.9*sig/max(abs(sig)); % normalize
 
-% preemph = [1 0.63];
-% sig = filter(1,preemph,sig);
+preemph = [1 0.63];
+sigf = filter(1,preemph,sig);
 
 %% GLOBAL VARIABLES
 % Various
@@ -14,45 +14,43 @@ Te = 1/ Fe;
 fmax = Fe / 2;
 
 % ANALYSIS
-N = length(sig);
+N = length(sigf);
 Nwin = 512;
 win = hamming(Nwin, 'periodic');
 over = 0.5;
 Nover = floor(over *Nwin);
 Nframes = floor(N/(Nwin*over)) - 2;
 Nfft = 1024;
-p = 25; % number of LPC poles 
+p = 40; % number of LPC poles 
 
 % VECTORS PLOT
 t = [0:Nframes] * Te;
 f = [-fmax : Fe/Nfft : fmax];
 
 %% Spectrogram
-[A, E, K, F] = spectroFormant(sig, p, Fe, win, Nover, Nfft);
 
-figure;
-plot(t, F')
+% POLE ANALYSIS
+[A, E, K, F, Nframes] = lpcAnalysis(sigf, p, win, Fe);
+sigStack = stackOLA(sigf, win, over);
 
-% interpolating tube sizes
-% Kt = [ K(:,24) K(:,94)];
-Kt = [K(:, 56) K(:, 125)];
-Ra = re2radius(Kt);
-Ra = interpVectors(Ra, Nframes);
-K1 = radius2re(Ra);
+% spectroFormant(sigf, p, Fe, win, Nover, Nfft);
 
-%% Rc to LPC
-% initializing dsp object: reflection coefficient to LPC
-rc2lpc = dsp.RCToLPC;
+%% Resynthesis
 
-% convert K to LPC coefficient
-[A1, P] = rc2lpc(K1);
+% ex = randn(Nwin, Nframes);
+residualStack = zeros(size(sigStack));
+residual = zeros(1, N);
 
-%% GRAPH
-figure;
-plot(A1');
-xlabel('Nombre de sample d''interpolation')
-ylabel('Valeur des poles')
-title('Valeur des poles en fonction du temps d''interpolation')
-saveas(gcf, 'figs/interpolated-poles.png')
+% computing residual
+for i = 1: Nframes,
+  residualStack(:,i) = filter(A(:,i), 1, sigStack(:,i) );
+end
+
+residual = pressStack(residualStack, over);
+plot(residual)
 
 
+
+
+
+% interpolateTubeSize.m
