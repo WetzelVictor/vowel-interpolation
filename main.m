@@ -32,12 +32,16 @@ f = [-fmax : Fe/Nfft : fmax];
 % POLE ANALYSIS
 [A, E, K, F, Nframes] = lpcAnalysis(sigf, p, win, Fe);
 
-% spectroFormant(sigf, p, Fe, win, Nover, Nfft);
-
 %% Resynthesis
 residual = myFilter(sigf, A, 1, win, over);
 plot(residual)
 
+resynthesized = myFilter(residual, 1, A, win, over);
 
+% Using Lowpass filter
+Fc = 100; % Cutoff frequency (Hz)
+Fc = 2 * Fc / Fe;
+[lp.B, lp.A] = butter(5, Fc, 'high');
+fvtool(lp.B, lp.A) % visualizing
+resynthesized = filter(lp.B, lp.A, resynthesized);
 
-% interpolateTubeSize.m
