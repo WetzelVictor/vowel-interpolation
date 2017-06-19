@@ -4,7 +4,7 @@ clear all; close all;
 Nwin = 512;
 win = hamming(Nwin, 'periodic');
 over = 0.5;
-p = 20;
+p = 49;
 
 %% LOAD AUDIO 
 % vowel i
@@ -33,26 +33,26 @@ i.rms = rms(i.sig);
 %% PLOT
 figure
 % vowel a
-subplot 321
+subplot 221
 plot(a.t, a.sig)
 title('vowel a')
 xlabel('Time(s)')
 ylabel('Amplitude')
 
-subplot 323
+subplot 223
 plot(a.t, a.res)
 title('Residual')
 xlabel('Time(s)')
 ylabel('Amplitude')
 
-
-subplot 322
+% vowel i
+subplot 222
 plot(i.t, i.sig)
 title('vowel i')
 xlabel('Time(s)')
 ylabel('Amplitude')
 
-subplot 324
+subplot 224
 plot(i.t, i.res)
 title('Residual')
 xlabel('Time(s)')
@@ -60,12 +60,13 @@ ylabel('Amplitude')
 
 
 %% INTERPOLATION:
+% Source (residual)
+iRes = interpSource(a.res, i.res);
+
 % Filter
 Kc1 = a.K(:, 400);
 Kc2 = i.K(:, 400);
 [A, K, P] = interpolateTubeSize( [Kc1 Kc2], Nframes);
-
-% Source (residual)
 
 %% RESYNTHESIS
 resynthesized = myFilter(a.res, 1, A, win, over);
