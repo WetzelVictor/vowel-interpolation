@@ -21,8 +21,8 @@ end
 % interpolating tube sizes
 Ra = re2radius(Kt);
 Ra = interpVectors(Ra, Nframes);
-K = radius2re(Ra);
-
+% K = radius2re(Ra);
+K = interpVectors(Kt, Nframes);
 %% Rc to LPC
 % initializing dsp object: reflection coefficient to LPC
 rc2lpc = dsp.RCToLPC;

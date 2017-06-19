@@ -1,10 +1,10 @@
 clear all; close all;
 
 %% BASIC NFO
-Nwin = 512;
+Nwin = 960;
 win = hamming(Nwin, 'periodic');
 over = 0.5;
-p = 49;
+p = 1 + floor( 44100/1000 );
 
 %% LOAD AUDIO 
 % vowel i
@@ -25,48 +25,49 @@ i.t = [0:i.N-1] / Fe;
 i.rms = rms(i.sig);
 
 %% ANALYSIS
-[i.A, i.K, i.res] = analysis(i.sig, Fe, p);
-[a.A, a.K, a.res] = analysis(a.sig, Fe, p);
+[i.A, i.K, i.res] = analysis(i.sig, Fe, p, win);
+[a.A, a.K, a.res] = analysis(a.sig, Fe, p, win);
 
 [~, Nframes] = size(a.K);
 
 %% PLOT
-figure
-% vowel a
-subplot 221
-plot(a.t, a.sig)
-title('vowel a')
-xlabel('Time(s)')
-ylabel('Amplitude')
-
-subplot 223
-plot(a.t, a.res)
-title('Residual')
-xlabel('Time(s)')
-ylabel('Amplitude')
-
-% vowel i
-subplot 222
-plot(i.t, i.sig)
-title('vowel i')
-xlabel('Time(s)')
-ylabel('Amplitude')
-
-subplot 224
-plot(i.t, i.res)
-title('Residual')
-xlabel('Time(s)')
-ylabel('Amplitude')
-
+% figure
+%
+% % vowel a
+% subplot 221
+% plot(a.t, a.sig)
+% title('vowel a')
+% xlabel('Time(s)')
+% ylabel('Amplitude')
+%
+% subplot 223
+% plot(a.t, a.res)
+% title('Residual')
+% xlabel('Time(s)')
+% ylabel('Amplitude')
+%
+% % vowel i
+% subplot 222
+% plot(i.t, i.sig)
+% title('vowel i')
+% xlabel('Time(s)')
+% ylabel('Amplitude')
+%
+% subplot 224
+% plot(i.t, i.res)
+% title('Residual')
+% xlabel('Time(s)')
+% ylabel('Amplitude')
+%
 
 %% INTERPOLATION:
 % Source (residual)
 iRes = interpSource(a.res, i.res);
 
 % Filter
-Kc1 = a.K(:, 400);
-Kc2 = i.K(:, 400);
-[A, K, P] = interpolateTubeSize( [Kc1 Kc2], Nframes);
+Kc1 = a.K(:, 200);
+Kc2 = i.K(:, 200);
+[A, K, P] = interpolateTubeSize( [Kc1 Kc2], Nframes, true);
 
 %% RESYNTHESIS
 resynthesized = myFilter(a.res, 1, A, win, over);
