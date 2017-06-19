@@ -21,7 +21,7 @@ over = 0.5;
 Nover = floor(over *Nwin);
 Nframes = floor(N/(Nwin*over)) - 2;
 Nfft = 1024;
-p = 40; % number of LPC poles 
+p = 1 + floor(Fe/1000); % number of LPC poles 
 
 % VECTORS PLOT
 t = [0:Nframes] * Te;
@@ -31,25 +31,12 @@ f = [-fmax : Fe/Nfft : fmax];
 
 % POLE ANALYSIS
 [A, E, K, F, Nframes] = lpcAnalysis(sigf, p, win, Fe);
-sigStack = stackOLA(sigf, win, over);
 
 % spectroFormant(sigf, p, Fe, win, Nover, Nfft);
 
 %% Resynthesis
-
-% ex = randn(Nwin, Nframes);
-residualStack = zeros(size(sigStack));
-residual = zeros(1, N);
-
-% computing residual
-for i = 1: Nframes,
-  residualStack(:,i) = filter(A(:,i), 1, sigStack(:,i) );
-end
-
-residual = pressStack(residualStack, over);
+residual = myFilter(sigf, A, 1, win, over);
 plot(residual)
-
-
 
 
 
