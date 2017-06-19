@@ -32,24 +32,40 @@ i.rms = rms(i.sig);
 
 %% PLOT
 figure
-
-subplot 211
+% vowel a
+subplot 321
 plot(a.t, a.sig)
 title('vowel a')
 xlabel('Time(s)')
 ylabel('Amplitude')
 
-subplot 212
+subplot 323
+plot(a.t, a.res)
+title('Residual')
+xlabel('Time(s)')
+ylabel('Amplitude')
+
+
+subplot 322
 plot(i.t, i.sig)
 title('vowel i')
 xlabel('Time(s)')
 ylabel('Amplitude')
 
-%% INTERPOLATION
+subplot 324
+plot(i.t, i.res)
+title('Residual')
+xlabel('Time(s)')
+ylabel('Amplitude')
+
+
+%% INTERPOLATION:
+% Filter
 Kc1 = a.K(:, 400);
 Kc2 = i.K(:, 400);
+[A, K, P] = interpolateTubeSize( [Kc1 Kc2], Nframes);
 
-[A, K, P] = interpolateTubeSize( [Kc1 Kc2], Nframes, true);
+% Source (residual)
 
 %% RESYNTHESIS
 resynthesized = myFilter(a.res, 1, A, win, over);
