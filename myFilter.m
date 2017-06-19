@@ -1,4 +1,5 @@
-% out = myFilter(Sig, A, win, over)
+% out = myFilter(Sig, B, A, win, over)
+%      filters signal with a certain set of changing filters
 %
 % sig - signal
 % B - Numerator
@@ -27,8 +28,13 @@ sigStack = stackOLA(sig, win, over);
 outStack = zeros(size(sigStack));
 out = zeros(1, N);
 
-for i = 1: Nframes,
-  outStack(:,i) = filter(B(:,i),A(:,i), sigStack(:,i) );
+%% LOOP
+% first step: stores initial status for the filter
+[outStack(:,11), zf] = filter(B(:,1),A(:,1), sigStack(:,1) );
+
+% other steps
+for i = 2: Nframes,
+  [outStack(:,i), zf]= filter(B(:,i),A(:,i), sigStack(:,i), zf);
 end
 
 out = pressStack(outStack, over);
