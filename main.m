@@ -1,47 +1,62 @@
-close all; clear all; 
+clear all; close all;
 
-%% LOAD AUDIO 
-% random audio signal
-[sig, Fe] = audioread('audio/full-sentence.wav');
-sig = 0.9*sig/max(abs(sig)); % normalize
-
-preemph = [1 0.63];
-sigf = filter(1,preemph,sig);
-
-%% GLOBAL VARIABLES
-% Various
-Te = 1/ Fe;
-fmax = Fe / 2;
-
-% ANALYSIS
-N = length(sigf);
+%% BASIC NFO
 Nwin = 512;
 win = hamming(Nwin, 'periodic');
 over = 0.5;
-Nover = floor(over *Nwin);
-Nframes = floor(N/(Nwin*over)) - 2;
-Nfft = 1024;
-p = 1 + floor(Fe/1000); % number of LPC poles 
+p = 20;
 
-% VECTORS PLOT
-t = [0:Nframes] * Te;
-f = [-fmax : Fe/Nfft : fmax];
+%% LOAD AUDIO 
+% vowel i
+[i.sig, Fe] = audioread('audio/i.wav');
+i.sig = rmsct(i.sig, Nwin, 0.05);
 
-%% Spectrogram
+% vowel a
+[a.sig, ~] = audioread('audio/a.wav');
+a.sig = rmsct(a.sig, Nwin, 0.05);
 
-% POLE ANALYSIS
-[A, E, K, F, Nframes] = lpcAnalysis(sigf, p, win, Fe);
+%% BASIC INFOS
+a.N = length(a.sig);
+a.t = [0:a.N-1] / Fe;
+a.rms = rms(a.sig);
 
-%% Resynthesis
-residual = myFilter(sigf, A, 1, win, over);
-plot(residual)
+i.N = length(i.sig);
+i.t = [0:i.N-1] / Fe;
+i.rms = rms(i.sig);
 
-resynthesized = myFilter(residual, 1, A, win, over);
+%% ANALYSIS
+[i.A, i.K, i.res] = analysis(i.sig, Fe, p);
+[a.A, a.K, a.res] = analysis(a.sig, Fe, p);
+
+[~, Nframes] = size(a.K);
+
+%% PLOT
+figure
+
+subplot 211
+plot(a.t, a.sig)
+title('vowel a')
+xlabel('Time(s)')
+ylabel('Amplitude')
+
+subplot 212
+plot(i.t, i.sig)
+title('vowel i')
+xlabel('Time(s)')
+ylabel('Amplitude')
+
+%% INTERPOLATION
+Kc1 = a.K(:, 400);
+Kc2 = i.K(:, 400);
+
+[A, K, P] = interpolateTubeSize( [Kc1 Kc2], Nframes, true);
+
+%% RESYNTHESIS
+resynthesized = myFilter(a.res, 1, A, win, over);
 
 % Using Lowpass filter
-Fc = 100; % Cutoff frequency (Hz)
+Fc = 300; % Cutoff frequency (Hz)
 Fc = 2 * Fc / Fe;
 [lp.B, lp.A] = butter(5, Fc, 'high');
-fvtool(lp.B, lp.A) % visualizing
 resynthesized = filter(lp.B, lp.A, resynthesized);
 
