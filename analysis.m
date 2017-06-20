@@ -35,6 +35,8 @@ elseif nargin < 5
   %overlapp
   over = 0.5;
   Nwin = length(win);
+else
+  Nwin = length(win);
 end
 
 %% PRE-TREATMENT 

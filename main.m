@@ -1,32 +1,52 @@
 clear all; close all;
 
 %% BASIC NFO
-Nwin = 960;
+Nwin = 2048;
 win = hamming(Nwin, 'periodic');
 over = 0.5;
-p = 1 + floor( 44100/1000 );
+p = 1 + floor( 44100/1200 );
 
 %% LOAD AUDIO 
 % vowel i
-[i.sig, Fe] = audioread('audio/i.wav');
-i.sig = rmsct(i.sig, Nwin, 0.05);
+[i.sig, Fe] = audioread('audio/i-flat.wav');
+i.sig = i.sig(:,1); % to mono
+i.sig = rmsct(i.sig, Nwin, 0.02);
+i.sig = i.sig(2.347e04:2.132e05);
 
 % vowel a
-[a.sig, ~] = audioread('audio/a.wav');
-a.sig = rmsct(a.sig, Nwin, 0.05);
+[a.sig, ~] = audioread('audio/a-flat.wav');
+a.sig = a.sig(:,1); % to mono
+a.sig = rmsct(a.sig, Nwin, 1);
+% a.sig = a.sig(1.578e04:2.227e05);
 
+% phase alignement
+[acor,lag] = xcorr(a.sig,i.sig);
+[~,I] = max(abs(acor));
+timeDiff = lag(I)-8;
+a.sig = a.sig(timeDiff:end);
+
+% visualizing phase alignement
+firstSamples = floor( Fe/220 );
+figure
+plot(a.sig(1:firstSamples));
+hold on
+plot(i.sig(1:firstSamples));
+grid on
+
+% temp = a.sig;
+% a.sig = i.sig;
+% i.sig = temp;
+%
 %% BASIC INFOS
 a.N = length(a.sig);
 a.t = [0:a.N-1] / Fe;
-a.rms = rms(a.sig);
 
 i.N = length(i.sig);
 i.t = [0:i.N-1] / Fe;
-i.rms = rms(i.sig);
 
 %% ANALYSIS
-[i.A, i.K, i.res] = analysis(i.sig, Fe, p, win);
-[a.A, a.K, a.res] = analysis(a.sig, Fe, p, win);
+[i.A, i.K, i.res] = analysis(i.sig, Fe, p, win, over);
+[a.A, a.K, a.res] = analysis(a.sig, Fe, p, win, over);
 
 [~, Nframes] = size(a.K);
 
@@ -65,16 +85,16 @@ i.rms = rms(i.sig);
 iRes = interpSource(a.res, i.res);
 
 % Filter
-Kc1 = a.K(:, 200);
-Kc2 = i.K(:, 200);
+Kc1 = a.K(:, 100);
+Kc2 = i.K(:, 100);
 [A, K, P] = interpolateTubeSize( [Kc1 Kc2], Nframes, true);
 
 %% RESYNTHESIS
-resynthesized = myFilter(a.res, 1, A, win, over);
+synth = myFilter(a.res, 1, A, win, over);
 
 % Using Lowpass filter
 Fc = 300; % Cutoff frequency (Hz)
 Fc = 2 * Fc / Fe;
 [lp.B, lp.A] = butter(5, Fc, 'high');
-resynthesized = filter(lp.B, lp.A, resynthesized);
+synth = filter(lp.B, lp.A, synth);
 
