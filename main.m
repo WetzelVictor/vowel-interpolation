@@ -6,7 +6,7 @@ win = hamming(Nwin, 'periodic');
 over = 0.5;
 % p = 1 + floor( 44100/1200 );
 % p = 6;
-p = 10;
+p = 15;
 
 %% LOAD AUDIO 
 % vowel i
@@ -27,16 +27,16 @@ timeDiff = lag(I)-8;
 a.sig = a.sig(timeDiff:end);
 
 % % % FIGURE visualizing phase alignement % % %
-figure
-firstSamples = floor( Fe/220 );
-plot(a.sig(1:firstSamples));
-hold on
-plot(i.sig(1:firstSamples));
-grid on
-title('Visualizing phase alignement')
-xlabel('Samples')
-ylabel('Amplitude')
-legend('vowel a','vowel i')
+% figure
+% firstSamples = floor( Fe/220 );
+% plot(a.sig(1:firstSamples));
+% hold on
+% plot(i.sig(1:firstSamples));
+% grid on
+% title('Visualizing phase alignement')
+% xlabel('Samples')
+% ylabel('Amplitude')
+% legend('vowel a','vowel i')
 
 %% BASIC INFOS
 a.N = length(a.sig);
@@ -52,20 +52,16 @@ i.t = [0:i.N-1] / Fe;
 
 %% INTERPOLATION:
 % Source (residual)
-iRes = interpSource(a.res, i.res);
+iRes = interpSource(i.res, a.res);
 [~, Nframes] = size(stackOLA(iRes, win, over));
 
 % Filter
-Kc1 = a.K(:, 100);
+Kc1 = i.K(:, 100);
 Kc2 = i.K(:, 100);
-[A, K, P] = interpolateTubeSize( [Kc1 Kc2], Nframes, true);
+[A, K, P] = interpolateTubeSize( [Kc1 Kc2], Nframes);
 
 %% RESYNTHESIS
 synth = myFilter(iRes, 1, A, win, over);
 
-% Using Lowpass filter
-% Fc = 300; % Cutoff frequency (Hz)
-% Fc = 2 * Fc / Fe;
-% [lp.B, lp.A] = butter(5, Fc, 'high');
-% synth = filter(lp.B, lp.A, synth);
-%
+soundsc(synth, Fe);
+audiowrite('output/interp3.wav',synth,Fe')

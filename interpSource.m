@@ -24,14 +24,15 @@ elseif N1 >= N2
 end
 
 % interpolation coefficient
-interpCoef = [0:N-1]/N;
-iCoef1 = interpCoef;
-iCoef2 = flip(interpCoef);
+iCoef1 = [0:N-1]/N;
 
 % init
 out = [];
 
+%% LOOP
 for i = 1: N;
   temp = s1(i,1)*iCoef1(i) + s2(i,1)*(1 - iCoef1(i));
   out = [out; temp];
+end
+
 end
