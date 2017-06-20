@@ -29,11 +29,17 @@ A = zeros(p+1, Nframes);
 E = zeros(1, Nframes);
 K = zeros(p, Nframes);
 F = zeros(p, Nframes);
+lpc2rc = dsp.LPCToRC;
 
 %% COMPUTING
 for i = 1 : Nframes,
   % Yule-Walker method: computes poles, residual and reflective coefficients
   % [A(:,i), E(i), K(:,i)] = aryule(x(:,i), p);
-  [A(:,i), E(i), K(:,i)] = arburg(x(:,i), p);
-  
- end
+  % [A(:,i), E(i), K(:,i)] = arburg(x(:,i), p);
+  A(:,i) = lpccovar(x(:,i), p);
+  K(:,i) = lpc2rc(A(:,i));
+    
+end
+
+
+end

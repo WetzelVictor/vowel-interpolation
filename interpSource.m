@@ -32,6 +32,6 @@ iCoef2 = flip(interpCoef);
 out = [];
 
 for i = 1: N;
-  temp = s1(i,1)*iCoef1(i) + s2(i,1)*iCoef2(i);
+  temp = s1(i,1)*iCoef1(i) + s2(i,1)*(1 - iCoef1(i));
   out = [out; temp];
 end
