@@ -17,7 +17,7 @@ end
 n = length(x);
 nw = length(w);
 step = floor(nw*R);
-count = ceil((n-nw)/step) + 1;
+count = floor((n-nw)/step) + 1;
 
 %% INIT
 X = zeros(nw, count);
@@ -36,10 +36,5 @@ for i = 1:count,
       X(:, i) = w .* x( (1:nw) + offset );
     end
 end
-
-
-
-
-
 
 end
