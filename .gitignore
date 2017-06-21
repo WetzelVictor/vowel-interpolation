@@ -111,3 +111,7 @@ ENV/
 *.ra
 *.wav
 *.wma
+
+# zip
+*.zip
+*.tar.gz
