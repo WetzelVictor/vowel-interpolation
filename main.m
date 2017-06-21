@@ -9,7 +9,7 @@ Nwin = 2048;
 win = hamming(Nwin, 'periodic');
 over = 0.5;
 % p = 1 + floor( 44100/1200 );
-p = 15;
+p = 6;
 
 %% LOAD AUDIO 
 % vowel i
@@ -19,7 +19,7 @@ v1.sig = v1.sig / (max(abs(v1.sig)));
 
 
 % vowel a
-[v2.sig, ~] = audioread('audio/u-flat.wav');
+[v2.sig, ~] = audioread('audio/i-flat.wav');
 v2.sig = v2.sig(:,1); % to mono
 v2.sig = v2.sig / (max(abs(v2.sig)));
 
@@ -51,12 +51,12 @@ iRes = interpSource(v1.res, v2.res);
 [~, Nframes] = size(stackOLA(iRes, win, over));
 
 % Filter
-Kc2 = v1.K(:, 110);
-Kc1 = v2.K(:, 100);
+Kc1 = v1.K(:, 110);
+Kc2 = v2.K(:, 100);
 [A, K, P] = interpolateTubeSize( [Kc1 Kc2], Nframes);
 
 %% RESYNTHESIS
 synth = myFilter(iRes, 1, A, win, over);
 
-% soundsc(synth, Fe);
-% audiowrite('output/interp3.wav',synth,Fe')
+soundsc(synth, Fe);
+audiowrite('output/interp-a-i.wav',synth,Fe')
