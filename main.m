@@ -57,7 +57,7 @@ iRes = interpSource(i.res, a.res);
 
 % Filter
 Kc1 = i.K(:, 100);
-Kc2 = i.K(:, 100);
+Kc2 = a.K(:, 100);
 [A, K, P] = interpolateTubeSize( [Kc1 Kc2], Nframes);
 
 %% RESYNTHESIS
