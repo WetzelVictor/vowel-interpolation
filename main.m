@@ -10,7 +10,6 @@ win = hamming(Nwin, 'periodic');
 over = 0.5;
 % p = 1 + floor( 44100/1200 );
 p = 15;
-F0 = 440; % pitch of the note (Hz)
 
 %% LOAD AUDIO 
 % vowel i
@@ -28,37 +27,6 @@ v2.sig = v2.sig / (max(abs(v2.sig)));
 %% BASIC INFOS
 v1.N = length(v1.sig);
 v2.N = length(v2.sig);
-
-if v1.N <= v2.N
-  v2.sig = v2.sig(1:v1.N);
-else
-  v1.sig = v1.sig(1:v2.N);
-end
-
-%% PHASE ALIGNEMENT
-lp.cutoff = 340;
-[lp.b, lp.a] = butter(10, 2*lp.cutoff/Fe, 'low');
-v1.filtered = filter(lp.b, lp.a, v1.sig);
-v2.filtered = filter(lp.b, lp.a, v2.sig);
-
-[acor, lag] = xcorr(v1.filtered, v2.filtered, 'biased');
-[~,I] = max(abs(acor));
-timeDiff = lag(I);
-
-if timeDiff < 0
-  v2.sig = v2.sig(abs(timeDiff):end);
-else
-  v1.sig = v1.sig(timeDiff:end);
-end
-
-v1.N = length(v1.sig);
-v2.N = length(v2.sig);
-
-if v1.N <= v2.N
-  v2.sig = v2.sig(1:v1.N);
-else
-  v1.sig = v1.sig(1:v2.N);
-end
 
 % % % FIGURE visualizing phase alignement % % %
 figure
