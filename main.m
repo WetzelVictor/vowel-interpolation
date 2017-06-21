@@ -1,3 +1,8 @@
+%%% VICTOR WETZEL
+% vowel-interpolation
+% GitHub: https://github.com/WetzelVictor/vowel-interpolation
+
+
 clear all; close all;
 
 %% BASIC NFO
@@ -52,12 +57,12 @@ i.t = [0:i.N-1] / Fe;
 
 %% INTERPOLATION:
 % Source (residual)
-iRes = interpSource(i.res, a.res);
+iRes = interpSource(a.res, i.res);
 [~, Nframes] = size(stackOLA(iRes, win, over));
 
 % Filter
-Kc1 = i.K(:, 100);
-Kc2 = a.K(:, 100);
+Kc1 = a.K(:, 100);
+Kc2 = i.K(:, 100);
 [A, K, P] = interpolateTubeSize( [Kc1 Kc2], Nframes);
 
 %% RESYNTHESIS
