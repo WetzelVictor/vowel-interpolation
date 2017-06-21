@@ -15,7 +15,7 @@ p = 15;
 
 %% LOAD AUDIO 
 % vowel i
-[i.sig, Fe] = audioread('audio/i-flat.wav');
+[i.sig, Fe] = audioread('audio/u-flat.wav');
 i.sig = i.sig(:,1); % to mono
 i.sig = i.sig / (max(abs(i.sig)));
 
