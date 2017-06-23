@@ -54,6 +54,8 @@ iRes = interpSource(v2.res, v2.res);
 [~, Nframes] = size(stackOLA(iRes, win, over));
 
 noise = randn(length(iRes), 1);
+fade = 0:0.01:1;
+noise = [noise(1:101).*fade'; noise(102:end)];
 % Filter
 Kc1 = v1.K(:, 110);
 Kc2 = v2.K(:, 100);
@@ -63,4 +65,4 @@ Kc2 = v2.K(:, 100);
 synth = myFilter(noise, 1, A, win, over);
 
 soundsc(synth, Fe);
-audiowrite(output,synth,Fe)
+% audiowrite(output,synth,Fe)
