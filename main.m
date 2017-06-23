@@ -12,6 +12,7 @@ over = 0.5;
 p = 25;
 
 %% LOAD AUDIO 
+
 % vowel 1
 [v1.sig, Fe] = audioread('audio/i-flat.wav');
 v1.sig = v1.sig(:,1); % to mono
@@ -47,13 +48,13 @@ legend('vowel a','vowel i')
 %% INTERPOLATION:
 
 % Source (residual)
-iRes = interpSource(v1.res, v2.res);
+iRes = interpSource(v2.res, v2.res);
 [~, Nframes] = size(stackOLA(iRes, win, over));
 
 % Filter
 Kc1 = v1.K(:, 110);
 Kc2 = v2.K(:, 100);
-[A, K, P] = interpolateTubeSize( [Kc1 Kc2], Nframes);
+[A, K, P] = interpolateTubeSize( [Kc1 Kc2], Nframes, true);
 
 %% RESYNTHESIS
 synth = myFilter(iRes, 1, A, win, over);
