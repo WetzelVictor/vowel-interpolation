@@ -13,12 +13,10 @@ p = 25;
 
 %% LOAD AUDIO 
 
-output = 'output/p15-interp-i-a.wav';
 % vowel 1
 [v1.sig, Fe] = audioread('audio/i-flat.wav');
 v1.sig = v1.sig(:,1); % to mono
 v1.sig = v1.sig / (max(abs(v1.sig)));
-
 
 % vowel 2
 [v2.sig, ~] = audioread('audio/a-flat.wav');

@@ -8,7 +8,8 @@
 %
 function X = stackOLA(x, w, R)
 
-% Default configuration
+%% Default configuration
+
 if nargin < 3
   R = 0.5;
 end
