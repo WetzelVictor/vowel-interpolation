@@ -1,4 +1,3 @@
-%%% Based on Hyung-Suk Kim script "stackOLA.m"
 % Stacks a signal into overlap-add chunks.
 %
 % x - a single channel signal
@@ -10,32 +9,61 @@ function X = stackOLA(x, w, R)
 
 %% Default configuration
 
-if nargin < 3
-  R = 0.5;
+if nargin < 2
+  w = ones(512,1);
+  R = 0;
+elseif nargin < 3
+  R = 0;
 end
+
+%% INPUT ERROR VERIFICATION
+if R < 0 || R >= 1
+  error('Bad Value: Overlap must be greater than 0 and less than one.');
+end
+
 
 %% BASIC NFO
-n = length(x);
-nw = length(w);
-step = floor(nw*R);
-count = floor((n-nw)/step) + 1;
+% Computing signal, window and step length
+N = length(x);
+Nw = length(w);
+Nover = floor(Nw*R);
+
+% Compute step size
+Nstep = Nw - Nover;
+
+% Number of frames
+Nframe = ceil((N-Nw)/Nstep)+1;
 
 %% INIT
-X = zeros(nw, count);
+X = zeros(Nw, Nframe);
 offset = 0;
 
-%% LOOP
-for i = 1:count,
+
+%% Stacking: LOOP
+
+for i = 1:Nframe,
     % Computes end index ...
-    limit = (i-1)*step + nw; 
+    limit = (i-1)*Nstep + Nw; 
+
     % ... and check if it tries to access a non-existing data cell
-    if limit > n, 
-      fill = zeros(1.5*nw - n + (i-1)*step - 1, 1);
-      X(:,i) = w.* [ x(nw + offset:end); fill];
+    if limit > N, 
+      disp( 'Zero-padding' )
+      % Creates a vector filled with zero
+      fill = zeros(1.5*Nw - N + (i-1)*Nstep - 1, 1);
+      disp( length(fill) )
+
+      % and zero pad the signal
+      X(:,i) = w.* [ x(Nw + offset:end); fill];
+
     else % otherwise, computes index. 
-      offset = (i-1)*step;
-      X(:, i) = w .* x( (1:nw) + offset );
+      offset = (i-1)*Nstep;
+
+      % ... and inputs the signal multiplied by the window in the right frame
+      X(:, i) = w .* x( (1:Nw) + offset );
     end
+
+
+%% END OF FUNCTION
 end
 
-end
+
