@@ -43,7 +43,7 @@ end
 sig = 0.9*sig/max(abs(sig)); % normalize
 
 % Preemphasis filter
-preemph = [1 0.63];
+preemph = [1 0.93];
 sigf = filter(1,preemph,sig);
 
 %% GLOBAL VARIABLES
@@ -54,6 +54,6 @@ Nover = floor(over *Nwin);
 [A, E, K, F, Nframes] = lpcAnalysis(sigf, p, win, Fe);
 
 %% RESIDUAL
-Res = myFilter(sigf, A, 1, win, over);
+Res = myFilter(sigf, A, 1, win);
 
 end

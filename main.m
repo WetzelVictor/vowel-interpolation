@@ -8,8 +8,8 @@ clear all; close all;
 Nwin = 2048;
 win = hamming(Nwin, 'periodic');
 over = 0.5;
-% p = 1 + floor( 44100/1200 );
-p = 25;
+p = 1 + floor( 44100/1200 );
+% p = 25;
 
 %% LOAD AUDIO 
 
@@ -48,7 +48,7 @@ legend('vowel a','vowel i')
 %% INTERPOLATION:
 
 % Source (residual)
-iRes = interpSource(v2.res, v2.res);
+iRes = interpSource(v1.res, v2.res);
 [~, Nframes] = size(stackOLA(iRes, win, over));
 
 % Filter
@@ -57,7 +57,7 @@ Kc2 = v2.K(:, 100);
 [A, K, P] = interpolateTubeSize( [Kc1 Kc2], Nframes, true);
 
 %% RESYNTHESIS
-synth = myFilter(iRes, 1, A, win, over);
+synth = myFilter(iRes, 1, A, win);
 
 % soundsc(synth, Fe);
 % audiowrite(output,synth,Fe)

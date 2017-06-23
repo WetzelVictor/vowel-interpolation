@@ -9,7 +9,7 @@
 %
 % out - filtered signal
 
-function out = myFilter(sig, B, A, win, over)
+function Sig = myFilter(sig, B, A, win)
 
 %% DEFAULT
 if B == 1,
@@ -23,21 +23,22 @@ end
 %% NFO
 N = length(sig);
 Nwin = length(win);
-sigStack = stackOLA(sig, win, over);
-
-outStack = zeros(size(sigStack));
-out = zeros(1, N);
 
 %% LOOP
 % first step: stores initial status for the filter
-[outStack(:,11), zf] = filter(B(:,1),A(:,1), sigStack(:,1) );
+[Sig(1:Nwin,1), zf] = filter(B(:,1),A(:,1), sig(1:Nwin, 1) );
+Sig = zeros(N, 1);
 
 % other steps
 for i = 2: Nframes,
-  [outStack(:,i), zf]= filter(B(:,i),A(:,i), sigStack(:,i), zf);
-end
+  flagA = Nwin * i + 1;
+  flagB = flagA + Nwin;
 
-out = pressStack(outStack, over);
-out = 0.9 * out/max(abs(out));
+  if flagB > N,
+    flagB = N;
+  end
+
+  [Sig(flagA:flagB,1), zf]= filter(B(:,i),A(:,i), sig(flagA:flagB,1), zf);
+end
 
 end
