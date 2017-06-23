@@ -54,15 +54,19 @@ iRes = interpSource(v2.res, v2.res);
 [~, Nframes] = size(stackOLA(iRes, win, over));
 
 noise = randn(length(iRes), 1);
+fc = 200; % cutoff frequency (Hz)
+[lp.b, lp.a] = butter(2, 2*fc/Fe,'high')
+noise = filter(lp.b, lp.a, noise);
 fade = 0:0.01:1;
-noise = [noise(1:101).*fade'; noise(102:end)];
+iRes = [noise(1:101).*fade'; noise(102:end)];
+
 % Filter
 Kc1 = v1.K(:, 110);
 Kc2 = v2.K(:, 100);
 [A, K, P] = interpolateTubeSize( [Kc1 Kc2], Nframes, true);
 
 %% RESYNTHESIS
-synth = myFilter(noise, 1, A, win, over);
+synth = myFilter(iRes, 1, A, win, over);
 
 soundsc(synth, Fe);
 % audiowrite(output,synth,Fe)
