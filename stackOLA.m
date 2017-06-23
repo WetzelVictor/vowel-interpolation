@@ -10,11 +10,8 @@ function X = stackOLA(x, w, R)
 
 %% Default configuration
 
-if nargin < 2
-  w = ones(512,1);
-  R = 1;
-elseif nargin < 3
-  R = 1;
+if nargin < 3
+  R = 0.5;
 end
 
 %% BASIC NFO

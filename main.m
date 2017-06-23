@@ -12,13 +12,10 @@ over = 0.5;
 p = 25;
 
 %% LOAD AUDIO 
-
-output = 'output/p15-interp-i-a.wav';
 % vowel 1
 [v1.sig, Fe] = audioread('audio/i-flat.wav');
 v1.sig = v1.sig(:,1); % to mono
 v1.sig = v1.sig / (max(abs(v1.sig)));
-
 
 % vowel 2
 [v2.sig, ~] = audioread('audio/a-flat.wav');
@@ -50,20 +47,13 @@ legend('vowel a','vowel i')
 %% INTERPOLATION:
 
 % Source (residual)
-iRes = interpSource(v2.res, v2.res);
+iRes = interpSource(v1.res, v2.res);
 [~, Nframes] = size(stackOLA(iRes, win, over));
-
-noise = randn(length(iRes), 1);
-fc = 200; % cutoff frequency (Hz)
-[lp.b, lp.a] = butter(2, 2*fc/Fe,'high')
-noise = filter(lp.b, lp.a, noise);
-fade = 0:0.01:1;
-iRes = [noise(1:101).*fade'; noise(102:end)];
 
 % Filter
 Kc1 = v1.K(:, 110);
 Kc2 = v2.K(:, 100);
-[A, K, P] = interpolateTubeSize( [Kc1 Kc2], Nframes, true);
+[A, K, P] = interpolateTubeSize( [Kc1 Kc2], Nframes);
 
 %% RESYNTHESIS
 synth = myFilter(iRes, 1, A, win, over);
