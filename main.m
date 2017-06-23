@@ -59,5 +59,5 @@ Kc2 = v2.K(:, 100);
 %% RESYNTHESIS
 synth = myFilter(iRes, 1, A, win, over);
 
-soundsc(synth, Fe);
+% soundsc(synth, Fe);
 % audiowrite(output,synth,Fe)
