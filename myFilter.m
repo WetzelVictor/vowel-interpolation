@@ -9,9 +9,10 @@
 %
 % out - filtered signal
 
-function out = myFilter(sig, B, A, win, over)
+function Sig = myFilter(sig, B, A, win)
 
 %% DEFAULT
+% if B or A is equal to one, then we create an empty array that is only filled with ones
 if B == 1,
   [~, Nframes] = size(A);
   B = ones(1, Nframes);
@@ -23,21 +24,41 @@ end
 %% NFO
 N = length(sig);
 Nwin = length(win);
-sigStack = stackOLA(sig, win, over);
 
-outStack = zeros(size(sigStack));
-out = zeros(1, N);
+%% INIT
+Sig = zeros(N, 1); % output signal
+flagA = 0; % top index for the given frame
+flagB = 0; % bottom index ...............
+
 
 %% LOOP
 % first step: stores initial status for the filter
-[outStack(:,11), zf] = filter(B(:,1),A(:,1), sigStack(:,1) );
+
+% computing indexes for each frame
+flagA = 1;
+flagB = flagA + Nwin;
+
+% filtering first frame
+[Sig(1:Nwin,1), zf] = filter(B(:,1), A(:,1), sig(1:Nwin, 1) );
 
 % other steps
 for i = 2: Nframes,
-  [outStack(:,i), zf]= filter(B(:,i),A(:,i), sigStack(:,i), zf);
+  % computing frame's indexes
+  flagA = flagB + 1;
+  flagB = flagA + Nwin ;
+  
+  % If we are at the end of the signal
+  if flagB > N,
+    flagB = N;
+    break 
+  end
+
+  % filters the given frame
+  [Sig(flagA:flagB,1), zf]= filter(B(:,i),A(:,i), sig(flagA:flagB,1), zf);
+
+  %%% END OF THE LOOP %%%
 end
 
-out = pressStack(outStack, over);
-out = 0.9 * out/max(abs(out));
 
+%%% THE END %%%
 end
