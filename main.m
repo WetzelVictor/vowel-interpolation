@@ -45,7 +45,13 @@ iRes = interpSource(v1.res, v2.res);
 % Interpolating Reflection coefficient
 Kc1 = v1.K(:, 110);
 Kc2 = v2.K(:, 100);
-[A, K, P] = interpolateTubeSize( [Kc1 Kc2], Nframes, false);
+[A, K, P] = interpolateTubeSize( [Kc1 Kc2], Nframes, true);
+
+% Interpolating LSF coefficients
+% Ac1 = v1.A(:, 110);
+% Ac2 = v2.A(:, 100);
+% A = LSFinterpLPC([Ac1 Ac2], Nframes, true);
+
 
 %% RESYNTHESIS
 synth = myFilter(iRes, 1, A, win);
