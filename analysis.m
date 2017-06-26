@@ -43,8 +43,8 @@ end
 sig = 0.9*sig/max(abs(sig)); % normalize
 
 % Preemphasis filter
-preemph = [1 0.93];
-sigf = filter(1,preemph,sig);
+preemph = [1 -0.93];
+sigf = filter(preemph,1,sig);
 
 %% GLOBAL VARIABLES
 N = length(sigf);
