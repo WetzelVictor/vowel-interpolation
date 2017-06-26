@@ -51,7 +51,7 @@ N = length(sigf);
 Nover = floor(over *Nwin);
 
 %% POLE ANALYSIS
-[A, E, K, F, Nframes] = lpcAnalysis(sigf, p, win, Fe);
+[A, E, K, Nframes] = lpcAnalysis(sigf, p, win);
 
 %% RESIDUAL
 Res = myFilter(sigf, A, 1, win);
