@@ -1,9 +1,14 @@
+% X = stackOLA(x,w,R)
 % Stacks a signal into overlap-add chunks.
+% WARNING: last frame is zero-padded in order to have a correct matrix
 %
-% x - a single channel signal
-% w - the window function
-% R - (optional) step size (%)
-% X - the overlap-add stack
+% INPUT:
+%   x - a single channel signal
+%   w - the window function
+%   R - (optional) step size (%)
+%
+% OUTPUT:
+%   X - the overlap-add stack
 %
 function X = stackOLA(x, w, R)
 
@@ -21,6 +26,15 @@ if R < 0 || R >= 1
   error('Bad Value: Overlap must be greater than 0 and less than one.');
 end
 
+[a, b] = size(x);
+if a == 1,
+  x = x';
+end
+
+[a, b] = size(w);
+if a == 1,
+  w = w';
+end
 
 %% BASIC NFO
 % Computing signal, window and step length
@@ -47,10 +61,12 @@ for i = 1:Nframe,
 
     % ... and check if it tries to access a non-existing data cell
     if limit > N, 
-      disp( 'Zero-padding' )
       % Creates a vector filled with zero
-      fill = zeros(1.5*Nw - N + (i-1)*Nstep - 1, 1);
-      disp( length(fill) )
+      if R == 0
+        fill = zeros(Nw - mod(N,Nw) - 1, 1);
+      else
+        fill = zeros(floor(1.5*Nw - N + (i-1)*Nstep) - 1, 1);
+      end
 
       % and zero pad the signal
       X(:,i) = w.* [ x(Nw + offset:end); fill];

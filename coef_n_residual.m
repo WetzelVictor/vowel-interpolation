@@ -1,7 +1,13 @@
 %%% VICTOR WETZEL
 % LAM, 2017
-clear all; close all;
+% This program takes a bunch of file with a specific format, on build a database
+% gathering informations about the signal, and LPC analysis
+%
+% FORMAT:
+% <vowel>-flat.wav
+%
 
+clear all; close all;
 
 %% BUILDING DATABASE
 folder = 'audio/HOMME/';
@@ -50,11 +56,58 @@ end
 %   pause
 % end
 
+
 %% COMPUTING GCI
 for i=1:numberOfFile,
-  win = ones(1,data(i).t0 * Fs); 
-  tempStack = stackOLA(abs( data(i).sig ), win, 0);
-  
-  % Pour chaque fenêtre, repérer le max, et lui mettre un tag 'GCI'. Ensuite on remet 
-  % le stack en signal et on le store dans la BDD
+  win = ones(1,floor(data(i).t0 * Fs)); 
+  tempStack = stackOLA(abs( data(i).sig  ), win, 0);
+  [maxStack, maxInd] = max(tempStack,[], 1);
+  [Nwin, Ntrames] = size(tempStack);
+
+  for j = 1:Ntrames,
+    maxInd(:,j) = maxInd(:,j) + (j-1)*Nwin;
+  end
+
+  maxInd = reshape(maxInd, 1,[]);
+  data(i).gci = maxInd;
+end
+
+%% COMPUTING LPC
+% Number of pole
+bdwthPerFormant = 1000; % (Hz) 1200 for female voice
+p = 1 + floor(Fs / bdwthPerFormant);
+
+for i=1:numberOfFile
+  NdoubleCycle = floor(2 * data(i).t0 * Fs);
+  win = hamming(NdoubleCycle,'periodic');
+  over = 0.5;
+
+  %% ANALYSIS
+  [Atemp, Ktemp, ResTemp] = analysis(data(i).sig, Fs, p, win, over); 
+
+  % store results
+  data(i).A = Atemp;
+  data(i).res = ResTemp;
+end
+
+%% WINDOWING DOUBLE-PERIODS
+for i = 1:numberOfFile,
+  NumberOfDoubleCycles = length(data(i).gci) - 2;
+
+  for j = 1:NumberOfDoubleCycles,
+    flagA = data(i).gci(j);
+    flagB = data(i).gci(j + 2);
+
+    if flagB > length(data(i).res),
+      break;
+    end
+
+    Nwin = flagB - flagA + 1;
+    win = hamming(Nwin, 'periodic');
+
+
+    % Extracting data
+    data(i).residualCycle(j).residual = data(i).res(flagA:flagB);
+    data(i).residualCycle(j).windowedResidual = data(i).res(flagA:flagB) .* win ;
+  end
 end
