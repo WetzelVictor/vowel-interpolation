@@ -12,9 +12,10 @@
 %   - A: poles for each frame
 %   - K: reflective coefficients
 %   - Res: residual signal
+%   - LSF: LSF coefficients
 
 
-function [A, K, Res] = analysis(sig, Fe, p, win, over)
+function [A, K, Res, LSF] = analysis(sig, Fe, p, win, over)
 
 %% Default value
 if nargin < 3
@@ -52,6 +53,12 @@ Nover = floor(over *Nwin);
 
 %% POLE ANALYSIS
 [A, E, K, Nframes] = lpcAnalysis(sigf, p, win);
+
+LSF = zeros(p, Nframes);
+
+for i = 1:Nframes,
+  LSF(:,i) = poly2lsf(A(:,i));
+end
 
 %% RESIDUAL
 Res = myFilter(sigf, A, 1, win);

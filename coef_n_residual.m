@@ -72,7 +72,7 @@ for i=1:numberOfFile,
   data(i).gci = maxInd;
 end
 
-%% COMPUTING LPC
+%% COMPUTING LPC AND LSFs
 % Number of pole
 bdwthPerFormant = 1000; % (Hz) 1200 for female voice
 p = 1 + floor(Fs / bdwthPerFormant);
@@ -83,10 +83,11 @@ for i=1:numberOfFile
   over = 0.5;
 
   %% ANALYSIS
-  [Atemp, Ktemp, ResTemp] = analysis(data(i).sig, Fs, p, win, over); 
+  [Atemp, Ktemp, ResTemp, LSFtemp] = analysis(data(i).sig, Fs, p, win, over); 
 
   % store results
   data(i).A = Atemp;
+  data(i).LSF = LSFtemp;
   data(i).res = ResTemp;
 end
 
@@ -111,3 +112,5 @@ for i = 1:numberOfFile,
     data(i).residualCycle(j).windowedResidual = data(i).res(flagA:flagB) .* win ;
   end
 end
+
+save('data_vowel.mat','data');
