@@ -6,7 +6,7 @@
 %   - Fe: samplerate
 %   - p : number of pole to perform analysis with (default: 1 + floor(Fe/1000))
 %   - win: window (default: 512 hamming window)
-%   - over: overlap (default: 50%)
+%   - over: overlap (default: 50% --> over=0.5)
 %
 % OUTPUT:
 %   - A: poles for each frame

@@ -20,10 +20,6 @@ cd(projectName);
 for i = 1:Nvow,
 
   [p, Nframes] = size(data(i).LSF);
-  % Create the folder for the vowel
-  % folderName = data(i).vowel;
-  % mkdir(folderName)
-  % cd(folderName)
   fileName = strcat(data(i).vowel,'.lsf');
   fileID = fopen(fileName,'w');
   
@@ -39,15 +35,15 @@ for i = 1:Nvow,
   fclose(fileID);
 
   % GCI
-  fileName = sprintf('%s.gci', data(i).vowel);
-  fileID = fopen(fileName,'w');
-  fprintf(fileID,'%i',i,data(i).gci);
-  fclose(fileID);
+  % fileName = sprintf('%s.gci', data(i).vowel);
+  % fileID = fopen(fileName,'w');
+  % fprintf(fileID,'%i',i,data(i).gci);
+  % fclose(fileID);
 
   % RESIDUAL
-  fileName = sprintf('%s.wav', data(i).vowel);
-  data(i).res = data(i).res/max(abs(data(i).res))*0.9;
-  audiowrite(fileName, data(i).res, Fe);
+  % fileName = sprintf('%s.wav', data(i).vowel);
+  % data(i).res = data(i).res/max(abs(data(i).res))*0.9;
+  % audiowrite(fileName, data(i).res, Fe);
 end
 
 cd ..

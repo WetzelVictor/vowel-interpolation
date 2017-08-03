@@ -109,9 +109,4 @@ ENV/
 *.mp3
 *.mpa
 *.ra
-*.wav
 *.wma
-
-# zip
-*.zip
-*.tar.gz

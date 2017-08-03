@@ -10,7 +10,7 @@
 clear all; close all;
 
 %% BUILDING DATABASE
-folder = 'audio/HOMME/';
+folder = 'audio/exp-2/';
 fileList = ls(folder);
 data = struct();
 numberOfFile = 0;
@@ -112,5 +112,6 @@ for i = 1:numberOfFile,
     data(i).residualCycle(j).windowedResidual = data(i).res(flagA:flagB) .* win ;
   end
 end
+structToMax(data, 'exp-2', Fs);
+% save('data_vowel.mat','data');
 
-save('data_vowel.mat','data');
