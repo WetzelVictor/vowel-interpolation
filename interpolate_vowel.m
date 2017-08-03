@@ -11,12 +11,12 @@ over = 0.5;
 
 %% LOAD AUDIO 
 % vowel 1
-[v1.sig, Fe] = audioread('audio/HOMME/i-flat.wav');
+[v1.sig, Fe] = audioread('audio/HOMME/a-flat.wav');
 v1.sig = v1.sig(:,1); % to mono
 v1.sig = v1.sig / (max(abs(v1.sig)));
 
 % vowel 2
-[v2.sig, ~] = audioread('audio/HOMME/a-flat.wav');
+[v2.sig, ~] = audioread('audio/HOMME/i-flat.wav');
 v2.sig = v2.sig(:,1); % to mono
 v2.sig = v2.sig / (max(abs(v2.sig)));
 

@@ -5,11 +5,11 @@ close all; clear all;
 
 %% CONSTANTS
 % Recording
-[sig, Fs] = audioread('audio/experiments/40bpm.wav');
+[sig, Fs] = audioread('audio/experiments/40bpm-vocal-v3.wav');
 
 % Analysis variables
 N = length(sig);
-P = 1 + Fs / 1000;
+P = 50;
 Twin = 0.020; % window's length (s)
 Nwin = floor(0.020 *Fs); % window's length (samples)
 over = 0.5; % overlapp
@@ -26,14 +26,14 @@ numberOfVowels = 8;
 data = struct();
 data.date = datetime('today');
 
-vowels = ['/i/';...
-          '/y/';...
-          '/u/';...
-          '/o/';...
-          '/c/';...
-          '/a/';...
-          '/3/';...
-          '/e/'];
+vowels = ['i';...
+          'y';...
+          'u';...
+          'o';...
+          'c';...
+          'a';...
+          '3';...
+          'e'];
 
 for i = 1:numberOfVowels
    data(i).vowel = vowels(i,:);
@@ -60,7 +60,7 @@ end
 %% Extracting recording's residual
 [~, ~, residual, ~] = analysis(sig, Fs, P, win, over); 
 
-for i = 1:numberOfVowels
-  soundsc(data(i).sig, Fs);
-  pause
-end
+% for i = 1:numberOfVowels
+%   soundsc(data(i).sig, Fs);
+%   pause
+% end
